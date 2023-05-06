@@ -1,0 +1,6 @@
+.loaderWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: calc(80vh - 200px);
+}
