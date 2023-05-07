@@ -1,67 +1,56 @@
-import React, { Component } from 'react';
+import { useState, useEffect } from 'react';
 import ReactModal from 'react-modal';
 import PropTypes from 'prop-types';
 import { Blocks } from 'react-loader-spinner';
 import styles from './Modal.module.css';
 
-class Modal extends Component {
-  state = {
-    loading: true,
-  };
+const Modal = ({ isOpen, selectedImage, onRequestClose }) => {
+  const [loading, setLoading] = useState(true);
 
-  handleImageLoad = () => {
-    this.setState({
-      loading: false,
-    });
-  };
-
-  componentDidMount() {
-    const { selectedImage } = this.props;
-
+  useEffect(() => {
     if (!selectedImage) {
-      this.setState({ loading: false });
+      setLoading(false);
       return;
     }
 
     const img = new Image();
     img.src = selectedImage.largeImageURL;
     img.onload = () => {
-      this.setState({ loading: false });
+      setLoading(false);
     };
-  }
+  }, [selectedImage]);
 
-  render() {
-    const { isOpen, selectedImage, onRequestClose } = this.props;
-    const { loading } = this.state;
+  const handleImageLoad = () => {
+    setLoading(false);
+  };
 
-    return (
-      <ReactModal
-        isOpen={isOpen}
-        onRequestClose={onRequestClose}
-        overlayClassName={styles.Overlay}
-        className={styles.Modal}
-        appElement={document.getElementById('root')}
-        shouldCloseOnOverlayClick={true}
-        shouldCloseOnEsc={true}
-        stylize={styles.customStyles}
-      >
-        {loading ? (
-          <Blocks />
-        ) : (
-          <>
-            {selectedImage && (
-              <img
-                src={selectedImage.largeImageURL}
-                alt={selectedImage.tags}
-                onLoad={this.handleImageLoad}
-              />
-            )}
-          </>
-        )}
-      </ReactModal>
-    );
-  }
-}
+  return (
+    <ReactModal
+      isOpen={isOpen}
+      onRequestClose={onRequestClose}
+      overlayClassName={styles.Overlay}
+      className={styles.Modal}
+      appElement={document.getElementById('root')}
+      shouldCloseOnOverlayClick={true}
+      shouldCloseOnEsc={true}
+      stylize={styles.customStyles}
+    >
+      {loading ? (
+        <Blocks />
+      ) : (
+        <>
+          {selectedImage && (
+            <img
+              src={selectedImage.largeImageURL}
+              alt={selectedImage.tags}
+              onLoad={handleImageLoad}
+            />
+          )}
+        </>
+      )}
+    </ReactModal>
+  );
+};
 
 Modal.propTypes = {
   isOpen: PropTypes.bool.isRequired,

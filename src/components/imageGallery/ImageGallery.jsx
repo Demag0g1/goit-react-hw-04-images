@@ -1,53 +1,42 @@
-import React, { Component } from 'react';
+import { useState } from 'react';
 import styles from './ImageGallery.module.css';
 import Modal from '../modal/Modal';
 import ImageGalleryItem from '../imageGalleryItem/ImageGalleryItem';
 import PropTypes from 'prop-types';
 
-class ImageGallery extends Component {
-  state = {
-    isOpen: false,
-    selectedImage: null,
+const ImageGallery = ({ images }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const openModal = image => {
+    setIsOpen(true);
+    setSelectedImage(image);
   };
 
-  render() {
-    const { images } = this.props;
-    const { selectedImage, isOpen } = this.state;
-
-    return (
-      <>
-        <ul className={styles.ImageGallery}>
-          {images.map(image => (
-            <ImageGalleryItem
-              key={image.id}
-              image={image}
-              onClick={() => this.openModal(image)}
-            />
-          ))}
-        </ul>
-        <Modal
-          isOpen={isOpen}
-          onRequestClose={this.closeModal}
-          selectedImage={selectedImage}
-        />
-      </>
-    );
-  }
-
-  openModal = image => {
-    this.setState({
-      isOpen: true,
-      selectedImage: image,
-    });
+  const closeModal = () => {
+    setIsOpen(false);
+    setSelectedImage(null);
   };
 
-  closeModal = () => {
-    this.setState({
-      isOpen: false,
-      selectedImage: null,
-    });
-  };
-}
+  return (
+    <>
+      <ul className={styles.ImageGallery}>
+        {images.map(image => (
+          <ImageGalleryItem
+            key={image.id}
+            image={image}
+            onClick={() => openModal(image)}
+          />
+        ))}
+      </ul>
+      <Modal
+        isOpen={isOpen}
+        onRequestClose={closeModal}
+        selectedImage={selectedImage}
+      />
+    </>
+  );
+};
 
 ImageGallery.propTypes = {
   images: PropTypes.arrayOf(
